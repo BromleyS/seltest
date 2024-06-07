@@ -22,11 +22,11 @@ public class GoogleTestIT extends SeleniumUnitTest
     @ParameterizedTest
     @CsvSource( { home + "," + existingElementXPath + ",true",
             home + "," + nonExistingElementXPath + ",false" } )
-    public void testGoogleExistingElementParam( String url, String xpath, String present ) throws InterruptedException
+    public void test(final String url, final String xpath, final String present ) throws InterruptedException
     {
         navTo( url );
         findAndClick( cookieRejectButtonXPath );
-        assertTrue( Boolean.parseBoolean( present ) == isElementPresent( xpath ) );
+        assertEquals(Boolean.parseBoolean(present), isElementPresent(xpath));
     }
 
 }

@@ -17,6 +17,8 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 /**
  * @author Simon.Bromley
@@ -44,7 +46,6 @@ public abstract class SeleniumUnitTest extends AbstractIntegrationTest
         SeleniumUnitTest.driver = driver;
     }
 
-
     /**
      * @param by Selection criteria
      * @return Matched WebElement
@@ -57,19 +58,19 @@ public abstract class SeleniumUnitTest extends AbstractIntegrationTest
     }
 
     /**
-     * @param xpath
-     * @return
+     * @param xpath selector to find elements
+     * @return list of WebElements found matching selector
      */
-    public List<WebElement> getElements( String xpath )
+    public List<WebElement> getElements(final String xpath )
     {
         return driver.findElements( By.ByCssSelector.xpath( xpath ) );
     }
 
     /**
-     * @param xpath
+     * @param xpath selector to check is present
      * @return True if found.
      */
-    public boolean isElementPresent( String xpath )
+    public boolean isElementPresent(final String xpath )
     {
         return isElementPresent( By.ByCssSelector.xpath( xpath ) );
     }
@@ -83,7 +84,7 @@ public abstract class SeleniumUnitTest extends AbstractIntegrationTest
         boolean elementFound = false;
         try
         {
-            List<WebElement> list = driver.findElements( by );
+            final List<WebElement> list = driver.findElements( by );
             elementFound = !list.isEmpty();
         }
         catch ( final NoSuchElementException e )
@@ -99,7 +100,12 @@ public abstract class SeleniumUnitTest extends AbstractIntegrationTest
     {
         if ( getWebDriver() == null )
         {
-            setWebDriver( new ChromeDriver() );
+            final ChromeDriverService svc = ChromeDriverService.createDefaultService();
+            svc.setExecutable(getPropertyValue("chrome_driver_exe"));
+
+            final ChromeOptions options = new ChromeOptions();
+            options.setBinary(getPropertyValue("chrome_exe"));
+            setWebDriver( new ChromeDriver(svc,options) );
 
             getWebDriver().manage().timeouts().implicitlyWait( 1, TimeUnit.SECONDS );
             getWebDriver().manage().window().setPosition( new Point( 0, 0 ) );
@@ -134,19 +140,19 @@ public abstract class SeleniumUnitTest extends AbstractIntegrationTest
     }
 
     /**
-     * @param url
+     * @param url address to navigate to
      */
-    public void navTo( String url )
+    public void navTo(final String url )
     {
         driver.navigate().to( url );
     }
 
     /**
-     * @param xpath
+     * @param xpath selector for attempt to find
      */
-    public void findAndClick( String xpath )
+    public void findAndClick(final String xpath )
     {
-        List<WebElement> els = getElements( xpath );
+        final List<WebElement> els = getElements( xpath );
         if ( !els.isEmpty() )
         {
             els.get( 0 ).click();

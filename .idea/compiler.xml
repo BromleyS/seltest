@@ -10,8 +10,5 @@
         <module name="seltest" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="seltest" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>
